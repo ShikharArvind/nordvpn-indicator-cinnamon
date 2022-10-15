@@ -1,7 +1,7 @@
 {
-    "uuid": "nordvpn-indicator@nickdurante",
+    "uuid": "nordvpn-indicator@shikhar",
     "name": "NordVPN Indicator",
     "description": "Check your NordVPN connection",
-    "icon": "network-vpn",
+    "icon": "icon.png",
     "max-instances": "-1"
 }

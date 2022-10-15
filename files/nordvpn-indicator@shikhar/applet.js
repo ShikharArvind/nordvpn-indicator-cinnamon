@@ -6,23 +6,23 @@ const PopupMenu = imports.ui.popupMenu;
 const GLib = imports.gi.GLib;
 const St = imports.gi.St;
 const Settings = imports.ui.settings;
-const UUID = "nordvpn-indicator@nickdurante";
+const UUID = "nordvpn-indicator@shikhar";
 
 // pull: https://github.com/linuxmint/cinnamon-spices-applets
 
-function NordVPNApplet(orientation, panel_height, instance_id) {
-    this._init(orientation, panel_height, instance_id);
+function NordVPNApplet(metadata,orientation, instance_id) {
+    this._init(metadata,orientation, instance_id);
 }
 
 NordVPNApplet.prototype = {
     __proto__: Applet.TextIconApplet.prototype,
 
-    _init: function(orientation, panel_height, instance_id) {
-        Applet.TextIconApplet.prototype._init.call(this, orientation, panel_height, instance_id);
-
-        this.set_applet_icon_name("network-vpn");
+    _init: function(metadata,orientation,instance_id) {
+        Applet.TextIconApplet.prototype._init.call(this, orientation, instance_id);
+        this.icon_on= metadata.path + '/nordvpn_on.png';
+        this.icon_off = metadata.path + '/nordvpn_off.png';
+        this.set_applet_icon_path(this.icon_off);
         this.set_applet_tooltip(_("Manage your NordVPN connection"));
-        this.set_applet_label("NordVPN");
         this.connected = false;
 		this.update_interval = 5000;
 
@@ -108,19 +108,23 @@ NordVPNApplet.prototype = {
 
     _get_status: function(){
         let status = this._run_cmd("nordvpn status");
-        let result = status.split("\n")[0].split(": ")[1];
+        let regex = /Status: ([a-zA-Z]+)/i;
+        let result = regex.exec(status)[1];
         let outString;
         if (result === "Connected"){
             this.connected = true;
+            this.set_applet_icon_path(this.icon_on);
             outString = "ON";
         }else if (result === "Disconnected"){
             this.connected = false;
+            this.set_applet_icon_path(this.icon_off);
             outString = "OFF";
         }else{
             this.connected = false,
+            this.set_applet_icon_path(this.icon_off)
             outString = "..."
         }
-        this.set_applet_label(outString);
+        //this.set_applet_label(outString);
     },
 
     _update_loop: function () {
@@ -132,5 +136,6 @@ NordVPNApplet.prototype = {
 
 
 function main(metadata, orientation, panel_height, instance_id) {
-    return new NordVPNApplet(orientation, panel_height, instance_id);
+    global.log("Was here")
+    return new NordVPNApplet(metadata, orientation, instance_id);
 }
