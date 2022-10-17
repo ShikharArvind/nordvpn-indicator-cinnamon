@@ -136,6 +136,5 @@ NordVPNApplet.prototype = {
 
 
 function main(metadata, orientation, panel_height, instance_id) {
-    global.log("Was here")
     return new NordVPNApplet(metadata, orientation, instance_id);
 }
